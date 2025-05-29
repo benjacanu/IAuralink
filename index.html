@@ -1,0 +1,146 @@
+from zipfile import ZipFile
+import os
+
+# Crear carpeta temporal del sitio
+site_dir = "/mnt/data/iauralink-site"
+os.makedirs(site_dir, exist_ok=True)
+
+# Guardar el archivo HTML actualizado
+html_content = """<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IAuralink</title>
+  <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/9068/9068743.png" />
+  <style>
+    html { scroll-behavior: smooth; }
+    body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
+    .fade-in { opacity: 0; transform: translateY(20px); transition: opacity 0.8s ease, transform 0.8s ease; }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+    .flag-icon { height: 16px; vertical-align: middle; margin-right: 0.3rem; }
+    section { padding: 4rem 2rem; }
+    h2 { font-size: 2rem; text-align: center; margin-bottom: 1.5rem; }
+    .card { background: #f5f5f5; padding: 1.5rem; border-radius: 8px; margin: 1rem auto; max-width: 600px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    .button { padding: 1rem 2rem; background-color: #093B6F; color: white; border: none; border-radius: 6px; text-decoration: none; cursor: pointer; }
+    #whatsapp-float {
+      position: fixed; bottom: 20px; right: 20px; background-color: #25d366;
+      color: white; border-radius: 50%; width: 60px; height: 60px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 30px; text-decoration: none; box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+  </style>
+</head>
+<body>
+<header>
+  <nav style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 2rem; background-color: #0d1b2a; color: white;">
+    <div style="display: flex; align-items: center;">
+      <img src="https://cdn-icons-png.flaticon.com/512/9068/9068743.png" alt="Logo" style="height: 40px; margin-right: 1rem;" />
+      <h1 style="font-size: 1.8rem; margin: 0; background: linear-gradient(to right, #03C4C4, #093B6F); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">IAuralink</h1>
+    </div>
+    <div>
+      <a href="#hero" style="margin: 0 1rem; color: white;">Inicio</a>
+      <a href="#services" style="margin: 0 1rem; color: white;">Servicios</a>
+      <a href="#plans" style="margin: 0 1rem; color: white;">Precios</a>
+      <a href="#feedback" style="margin: 0 1rem; color: white;">Clientes</a>
+      <a href="#contacto" style="margin: 0 1rem; color: white;">Contacto</a>
+      <button id="languageBtn" onclick="switchLanguage()" style="margin-left: 1rem; background: #03C4C4; color: white; border: none; border-radius: 4px; padding: 0.5rem 1rem;">
+        <img id="flagIcon" src="https://flagcdn.com/w40/gb.png" class="flag-icon" /> English
+      </button>
+    </div>
+  </nav>
+</header>
+
+<section id="hero" class="fade-in" style="text-align: center; background: linear-gradient(to right, #03C4C4, #093B6F); color: white;">
+  <h2 style="font-size: 3rem;">Automatiza. Conecta. Escala.</h2>
+  <p>Impulsa tu negocio con tecnología e inteligencia artificial para escalar ventas y presencia online.</p>
+  <a href="#services" class="button">Explorar servicios</a>
+</section>
+
+<section id="services" class="fade-in">
+  <h2>Servicios</h2>
+  <div class="card"><strong>Automatización:</strong> Bots, reservas, formularios y respuestas automáticas.</div>
+  <div class="card"><strong>Diseño web:</strong> Sitios modernos, rápidos y responsivos para destacar online.</div>
+  <div class="card"><strong>Gestión de redes sociales:</strong> Estrategia, contenido y publicaciones con IA.</div>
+  <div class="card"><strong>Campañas publicitarias:</strong> Meta Ads, Google Ads optimizados para tu nicho.</div>
+</section>
+
+<section id="plans" class="fade-in">
+  <h2>Planes y Precios</h2>
+  <div class="card"><h3>Starter</h3><p>$50 USD – Página simple + automatización básica</p></div>
+  <div class="card"><h3>Growth</h3><p>$120 USD – Página + Automatización + RRSS</p></div>
+  <div class="card"><h3>Full Pro</h3><p>$200 USD – Todo incluido + chatbot personalizado</p></div>
+</section>
+
+<section id="feedback" class="fade-in">
+  <h2>Clientes</h2>
+  <div class="card"><p>“Mejoramos la atención al cliente en 24h gracias a los bots de IAuralink.”</p><strong>- Diego, México</strong></div>
+  <div class="card"><p>“Ahora recibimos 3x más reservas automáticas. Rápido y eficaz.”</p><strong>- Laura, Chile</strong></div>
+</section>
+
+<section id="contacto" class="fade-in">
+  <h2>Contacto</h2>
+  <div style="text-align: center;">
+    <a href="mailto:contacto@iauralink.com" class="button">Enviar correo</a>
+    <button onclick="alert('Chatbot pronto disponible');" class="button" style="margin-left: 1rem;">Abrir chatbot</button>
+  </div>
+</section>
+
+<a href="https://wa.me/56912345678?text=Hola%2C+quiero+más+información+sobre+IAuralink" id="whatsapp-float" target="_blank">💬</a>
+
+<script>
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) entry.target.classList.add('visible');
+    });
+  });
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+  window.onload = () => {
+    const lang = localStorage.getItem('lang') || 'es';
+    if (lang === 'en') switchLanguage(true);
+  };
+
+  function switchLanguage(fromLoad = false) {
+    const body = document.body;
+    const btn = document.getElementById('languageBtn');
+    const flag = document.getElementById('flagIcon');
+    if (body.lang === 'es' || (!fromLoad && !body.lang)) {
+      body.lang = 'en';
+      localStorage.setItem('lang', 'en');
+      document.querySelectorAll('h2, p, a, button, label, strong').forEach(el => {
+        el.textContent = el.textContent
+          .replace('Automatiza. Conecta. Escala.', 'Automate. Connect. Scale.')
+          .replace('Impulsa tu negocio con tecnología e inteligencia artificial para escalar ventas y presencia online.', 'Boost your business with AI-powered tech and online presence.')
+          .replace('Explorar servicios', 'Explore services')
+          .replace('Servicios', 'Services')
+          .replace('Planes y Precios', 'Plans and Pricing')
+          .replace('Clientes', 'Clients')
+          .replace('Contacto', 'Contact')
+          .replace('Enviar correo', 'Send Email')
+          .replace('Abrir chatbot', 'Open Chatbot')
+          .replace('Mejoramos la atención al cliente en 24h gracias a los bots de IAuralink.', 'We improved customer support in 24h thanks to IAuralink bots.')
+          .replace('Ahora recibimos 3x más reservas automáticas. Rápido y eficaz.', 'We now get 3x more automatic bookings. Fast and efficient.');
+      });
+      btn.innerHTML = '<img id=\"flagIcon\" src=\"https://flagcdn.com/w40/es.png\" class=\"flag-icon\" /> Spanish';
+    } else {
+      body.lang = 'es';
+      localStorage.setItem('lang', 'es');
+      location.reload();
+    }
+  }
+</script>
+</body>
+</html>
+"""
+
+html_path = os.path.join(site_dir, "index.html")
+with open(html_path, "w", encoding="utf-8") as f:
+    f.write(html_content)
+
+# Crear el archivo ZIP
+zip_path = "/mnt/data/IAuralink_Site.zip"
+with ZipFile(zip_path, 'w') as zipf:
+    zipf.write(html_path, arcname="index.html")
+
+zip_path
